@@ -4,8 +4,8 @@ class WagonPassenger < Wagon
     super
   end
 
+  private
 
-private
   def such?
     # wagon.class == WagonPassenger
   end

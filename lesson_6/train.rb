@@ -1,80 +1,63 @@
-require_relative "./company.rb"
-require_relative "./instance_counter.rb"
-
 class Train
   include Company
   include InstanceCounter
-  attr_accessor :speed, :wagon, :type, :route, :station
+  attr_accessor :speed, :wagon, :type, :route, :station, :number
 
   @@train_list = {}
+  NUMBER_FORMAT = /^[а-яa-z\d]{3}-?[а-яa-z\d]{2}/
 
   def initialize(number, type)
     register_instance
     @type = type
     @number = number
+    validate!
+    message_created
     @speed = 0
-    @wagon = []
+    @wagons = []
     @@train_list[number] = self
-    puts "Собран новый поезд №#{@number}, типа #{@type}"
+  end
+
+  def self.t
+    @@train_list
+  end
+
+  def valid?
+    validate!
+  rescue
+    false
   end
 
   def self.find(number)
-    if @@train_list[number].nil?
-      puts "Объект поезда с номером #{number} не найден, возвращаю nil"
-    else
-      @@train_list[number]
-    end
-  end
-
-  def type
-    puts "Поезд №#{@number} типа #{@type}"
-  end
-
-  def speed
-    puts "Поезд №#{@number} имеет скорость #{@speed} км/ч"
+    @train_list[number]
   end
 
   def speed_up
     @speed += 20
-    if speed_zero?
-      puts "Поезд №#{@number} сдвинулся с места и поехал со скоростью 20 км/ч"
-    else
-      puts "Поезд №#{@number} ускорился на 20 км/ч, теперь его скорость составляет #{@speed}"
-    end
   end
 
   def stop
-    if speed_zero?
-      puts "Поезд №#{@number} уже стоит"
-    else
-      @speed = 0
-      puts "Поезд №#{@number} остановлен"
-    end
+    @speed = 0
   end
 
   def add_wagon(wagon)
     if wagon_such_train?(wagon) && speed_zero?
-      @wagon << wagon.list
-      puts "К грузовому поезду №#{@number} добавлен грузовой вагон №#{wagon.list}, теперь у него вагонов #{@wagon.size} шт."
+      @wagons << wagon.list
     elsif !wagon_such_train?(wagon) && !speed_zero?
-      puts "Сначала остановите поезд, для того что бы добавить к нему вагон"
+      raise "Сначала остановите поезд, для того что бы добавить к нему вагон"
     elsif !wagon_such_train?(wagon)
-      puts "Вы не можете присоединить этот вагон к этому поезду"
+      raise "Вы не можете присоединить этот вагон к этому поезду"
     end
   end
 
   def list_wagon
-    puts "У поезда сейчас вагонов #{@wagon.size} шт."
-    puts "К поезду присоединены вагоны под номерами #{@wagon}"
-
+    @wagons
   end
 
   def delete_wagon
     if speed_zero?
-      @wagon.pop
-      puts "От поезда №#{@number} отцеплен вагон"
+      @wagons.pop
     else
-      puts "Сначала остановите поезд"
+      raise "Сначала остановите поезд"
     end
   end
 
@@ -99,6 +82,15 @@ class Train
   private
 
   # Методы вынесены потому что они не используются клиентским кодом, а только другими методами.
+  def validate!
+    raise "Номер поезда не может быть пустой" if number.nil?
+    raise "Не верный формат поезда" if number.to_s !~ NUMBER_FORMAT
+    raise "Тип поезда не соответствует не отдному из существующих типов" unless type == :freight || type == :passenger
+    raise "Поезд с номером #{number} уже существует" if @@train_list.key?(number)
+    # rescue RuntimeError => e
+    #   puts e
+    true
+  end
 
   def speed_zero?
     @speed.zero?
@@ -115,6 +107,10 @@ class Train
   end
 
   def wagon_such_train?
+  end
+
+  def message_created
+    puts "Собран новый поезд №#{@number}, типа #{@type}"
   end
 
 end

@@ -4,7 +4,7 @@ class TrainPassenger < Train
     super
   end
 
-  private
+private
 
   def wagon_such_train?(wagon)
     wagon.class == WagonPassenger

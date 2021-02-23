@@ -1,45 +1,54 @@
 class Route
 
   def initialize(stations = [])
-    @stations = stations
-    validate!
-    message_created
-  end
-
-  def valid?
-    validate!
-  rescue
-    false
-  end
-
-  def add(station)
-    raise "Станция не относится к классу #{RailwayStation}" unless station.class == RailwayStation
-    @stations.insert(-2, station.name)
-  end
-
-  def delete(station)
-    if @stations.include?(station)
-      @stations.delete(station)
-      puts "Станция #{station} удалена из маршрута"
+    if stations.size >= 2
+      @stations = stations
+      puts "Маршрут #{@stations.first} - #{@stations.last} создан"
     else
-      puts "Станции #{station} станции нет в маршруте"
+      puts "В маршруте мало станций"
     end
   end
 
-  def list
-    puts "Маршрут от #{@stations.first} до #{@stations.last}"
-    @stations.each_with_index { |station, index| puts "#{index + 1}. #{station}" }
-  end
+	def add(station)
+		@stations.insert(-2, station)
+		puts "Новая станция #{station} добавлена в маршрут"
+	end
 
-  private
+	def delete(station)
+		if @stations.include?(station)
+			@stations.delete(station)
+			puts "Станция #{station} удалена из маршрута"
+		else
+			puts "Станции #{station} станции нет в маршруте"
+		end
+	end
 
-  def validate!
-    raise "Название станции обязательно к заполнению" if @stations.nil?
-    raise "В маршруте должно быть не меее двух станций" if @stations.size <= 1
-    true
-  end
+	def list
+	  puts "Маршрут от #{@stations.first} до #{@stations.last}"
+    @stations.each_with_index{ |station, index| puts "#{index + 1}. #{station}"}
+	end
 
-  def message_created
-    puts "Маршрут от #{@stations.first} до #{@stations.last} создан"
-  end
+
+private
+  # У меня нет идей какие методы можно внести сюда
 end
+
+
+
+# Ненужные методы
+ # def stations
+ #    @stations
+ #  end
+
+ # def start_route
+ #  print stations
+ # puts "Первая станция маршрута #{@stations.first} - #{@stations.last}  это #{@stations[0]}"
+ # # end
+
+ # def end_route
+ #   puts "Последняя станция данного маршрута #{@stations[-1]}"
+ # end
+
+  # def middle_route
+  #   puts "Промежуточные станции данного маршрута #{@stations[1..-2]}"
+  # end

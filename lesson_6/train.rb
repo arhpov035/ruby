@@ -10,21 +10,20 @@ class Train
     register_instance
     @type = type
     @number = number
-    validate!
+    @errors = []
     message_created
+    raise StandardError.new(@errors.join(', ')) unless valid?
     @speed = 0
     @wagons = []
     @@train_list[number] = self
   end
 
-  def self.t
-    @@train_list
-  end
-
   def valid?
-    validate!
-  rescue
-    false
+    @errors << "The train number cannot be empty" if number.nil?
+    @errors << "Wrong train format" if number.to_s !~ NUMBER_FORMAT
+    @errors << "Wrong type of train" unless type == :freight || type == :passenger
+    @errors << "Train with a number #{number} already exists" if @@train_list.key?(number)
+    @errors.empty?
   end
 
   def self.find(number)
@@ -82,15 +81,6 @@ class Train
   private
 
   # Методы вынесены потому что они не используются клиентским кодом, а только другими методами.
-  def validate!
-    raise "Номер поезда не может быть пустой" if number.nil?
-    raise "Не верный формат поезда" if number.to_s !~ NUMBER_FORMAT
-    raise "Тип поезда не соответствует не отдному из существующих типов" unless type == :freight || type == :passenger
-    raise "Поезд с номером #{number} уже существует" if @@train_list.key?(number)
-    # rescue RuntimeError => e
-    #   puts e
-    true
-  end
 
   def speed_zero?
     @speed.zero?

@@ -10,15 +10,16 @@ class RailwayStation
   def initialize(name)
     @name = name
     @trains = {}
+    @errors = []
     message_created
-    @@all_station << name
-    validate!
+    raise StandardError.new(@errors.join(', ')) unless valid?
+    @@all_station << self # Что бы добавить инстанс, а не только его имя
   end
 
   def valid?
-    validate!
-  rescue
-    false
+    @errors << "Имя является обязательным полем" if name.nil?
+    @errors << "Название станции не может состоять менее чем из 4-x символов" if !name.nil? && name.length < 4
+    @errors.empty?
   end
 
   def list
@@ -54,12 +55,6 @@ class RailwayStation
   end
 
   private
-
-  def validate!
-    raise "Имя является обязательным полем" if name.nil?
-    raise "Название станции не может состоять менее чем из 4-x символов" if name.length < 4
-    true
-  end
 
   def message_created
     puts "Станция #{@name} cоздана"

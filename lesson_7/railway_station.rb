@@ -54,6 +54,10 @@ class RailwayStation
     end
   end
 
+  def all_send_train(&block)
+    block.call(@trains)
+  end
+
   private
 
   def message_created

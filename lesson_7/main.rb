@@ -12,34 +12,27 @@ require_relative "./wagon.rb"
 require_relative "./wagon_cargo.rb"
 require_relative "./wagon_passenger.rb"
 
-train_1 = Train.new("123-tb", :freight)
-train_2 = Train.new("234-tb", :passenger)
+# begin
+#   RailwayStation.new nil # Пустое имя чтобы проверить валидацию
+#   RailwayStation.new 'mos'
+# rescue StandardError => error
+#   puts error.message
+# end
 
-station_1 = RailwayStation.new("Moscow")
-station_2 = RailwayStation.new("Krasnoyarsk")
+# begin
+#   Route.new [1]
+# rescue StandardError => error
+#   puts error.message
+# end
 
-station_1.take_train(train_1.list)
-station_1.take_train(train_2.list)
+# begin
+#   Train.new "123-tb", :freight
+# rescue StandardError => error
+#   puts error.message
+# end
 
-
-block_s = Proc.new do |hash_train|
-  puts "*****************************************"
-  hash_train.each do |key, value|
-    hash_train.delete(key)
-    puts "Поезд № #{key} отправлен со станции"
-  end
-  puts "*****************************************"
-  if hash_train.empty?
-    puts "Все поезда уехали со станции"
-  else
-    puts "На станции остались поезда"
-  end
+begin
+  Wagon.new nil, nil
+rescue StandardError => error
+  puts error.message
 end
-
-station_1.all_send_train(&block_s)
-
-block_t = Proc.new do |wagon|
-  puts "Объект поезда № #{wagon.number} передан в блок"
-end
-train_1.accept_wagon(&block_t)
-

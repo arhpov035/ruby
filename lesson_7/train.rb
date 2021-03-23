@@ -78,14 +78,6 @@ class Train
     return { @number => @type }
   end
 
-  def accept_wagon(&block)
-    @wagons.each do |wagon|
-      block.call(wagon)
-    end
-    puts "--------------------------------"
-    puts "Все объекты переданны успешно!!!"
-  end
-
   private
 
   # Методы вынесены потому что они не используются клиентским кодом, а только другими методами.

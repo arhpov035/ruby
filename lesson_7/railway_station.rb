@@ -54,8 +54,10 @@ class RailwayStation
     end
   end
 
-  def all_send_train(&block)
-    block.call(@trains)
+  def each_train(&block)
+    @trains.each do |train|
+      block.call(train)
+    end
   end
 
   private

@@ -78,7 +78,7 @@ class Train
     return { @number => @type }
   end
 
-  def accept_wagon(&block)
+  def each_wagon(&block)
     @wagons.each do |wagon|
       block.call(wagon)
     end
